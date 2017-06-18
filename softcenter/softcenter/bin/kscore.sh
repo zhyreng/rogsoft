@@ -14,5 +14,4 @@ sh $KSROOT/perp/perp.sh
 # dectect if menu mounted
 mount=`mount | grep "menuTree"`
 [ -z "$mount" ] && mount --bind /jffs/koolshare/webs/menuTree.js /www/require/modules/menuTree.js
-
 mkdir -p /jffs/etc/dnsmasq.d
