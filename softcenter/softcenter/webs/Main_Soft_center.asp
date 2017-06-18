@@ -13,13 +13,13 @@
 <link rel="stylesheet" type="text/css" href="/res/Softerware_center.css">
 <script type="text/javascript" src="/js/jquery.js"></script>
 <script>
-	var db_softcenter_ = [];
-	$.getJSON("/_api/softcenter_", function(resp) {
-		db_softcenter_=resp.result[0];
-    	if(!db_softcenter_["softcenter_version"]) {
-    	    db_softcenter_["softcenter_version"] = "0.0";
-    	}
-	});
+    var db_softcenter_ = [];
+    $.getJSON("/_api/softcenter_", function(resp) {
+        db_softcenter_=resp.result[0];
+        if(!db_softcenter_["softcenter_version"]) {
+            db_softcenter_["softcenter_version"] = "0.0";
+        }
+    });
 </script>
 <script language="JavaScript" type="text/javascript" src="/state.js"></script>
 <script language="JavaScript" type="text/javascript" src="/help.js"></script>
@@ -114,14 +114,14 @@
     .icon-desc .install-btn,
     .icon-desc .uninstall-btn,
     .icon-desc .update-btn{
-    	background: #fff;
-    	color:#333;
-    	cursor:pointer;
-    	text-align: center;
-    	font-size: 13px;
-    	padding-bottom: 5px;
-    	margin-left: 10px;
-    	margin-right: 10px;
+        background: #fff;
+        color:#333;
+        cursor:pointer;
+        text-align: center;
+        font-size: 13px;
+        padding-bottom: 5px;
+        margin-left: 10px;
+        margin-right: 10px;
         display: block;
         width: 100%;
         height: 18px;
@@ -213,9 +213,9 @@
         display: block;
     } 
     .cloud_main_radius h2 { border-bottom:1px #AAA dashed;}
-	.cloud_main_radius h3,
-	.cloud_main_radius h4 { font-size:12px;color:#FC0;font-weight:normal;font-style: normal;}
-	.cloud_main_radius h5 { color:#FFF;font-weight:normal;font-style: normal;}
+    .cloud_main_radius h3,
+    .cloud_main_radius h4 { font-size:12px;color:#FC0;font-weight:normal;font-style: normal;}
+    .cloud_main_radius h5 { color:#FFF;font-weight:normal;font-style: normal;}
 </style>
 <script>
 //set tabstop=4 set shiftwidth=4 set expandtab
@@ -269,44 +269,46 @@ function appPostScript(moduleInfo, script) {
     data["softcenter_home_url"] = "https://rogsoft.ngrok.wang";
     data["softcenter_installing_todo"] = moduleInfo.name;
     if(script == "ks_app_install.sh") {
-    data["softcenter_installing_tar_url"] = moduleInfo.tar_url;
-    data["softcenter_installing_md5"] = moduleInfo.md5;
-    data["softcenter_installing_version"] = moduleInfo.version;
-
-    //Update title for this module
-    data[moduleInfo.name + "_title"] = moduleInfo.title;
+        data["softcenter_installing_tar_url"] = moduleInfo.tar_url;
+        data["softcenter_installing_md5"] = moduleInfo.md5;
+        data["softcenter_installing_version"] = moduleInfo.version;
+        //Update title for this module
+        data[moduleInfo.name + "_title"] = moduleInfo.title;
+        action="ks_app_install";
+    }else if(script == "ks_app_remove.sh"){
+        action="ks_app_remove";
     }
-
-	var id = parseInt(Math.random() * 100000000);
-	var postData = {"id": id, "method":script, "params":[], "fields": data};
-		$.ajax({
-		  type: "POST",
-		  url: "/_api/",
-		  data: JSON.stringify(postData),
-		  dataType: "json",
-    	  success: function(response) {
-    	      var d = new Date();
-    	      //持续更新
-    	      currState.lastChangeTick = d/1000 + TIMEOUT_SECONDS;
-    	      currState.installing = true;
-    	      showInstallStatus(true);
-    	  },
-    	  error: function() {
-    	      currState.installing = false;
-    	  }
-		});
-
-	}
-	function appInstallModule(moduleInfo) {
-	    appPostScript(moduleInfo, "ks_app_install.sh");
-	}
-	function appUninstallModule(moduleInfo) {
 	
-	    if (!window.confirm('确定卸载吗')) {
-	        return;
-	    }
-	    appPostScript(moduleInfo, "ks_app_remove.sh");
-	}
+    var id = parseInt(Math.random() * 100000000);
+    var postData = {"id": id, "method":script, "params":[action], "fields": data};
+        $.ajax({
+          type: "POST",
+          url: "/_api/",
+          data: JSON.stringify(postData),
+          dataType: "json",
+          success: function(response) {
+              var d = new Date();
+              //持续更新
+              currState.lastChangeTick = d/1000 + TIMEOUT_SECONDS;
+              currState.installing = true;
+              showInstallStatus(true);
+          },
+          error: function() {
+              currState.installing = false;
+          }
+        });
+
+    }
+    function appInstallModule(moduleInfo) {
+        appPostScript(moduleInfo, "ks_app_install.sh");
+    }
+    function appUninstallModule(moduleInfo) {
+    
+        if (!window.confirm('确定卸载吗')) {
+            return;
+        }
+        appPostScript(moduleInfo, "ks_app_remove.sh");
+    }
     //TODO auto detect home url
     db_softcenter_["softcenter_home_url"] = "https://rogsoft.ngrok.wang";
     
@@ -320,27 +322,27 @@ function appPostScript(moduleInfo, script) {
     var softInfo = null;
     
     function initInstallStatus() {
-    	var o = db_softcenter_;
-    	var base = "softcenter_installing_";
-    	if(o[base+"status"]) {
-    	    //状态不是0/1/7,则当前正处于安装状态,实时更新安装信息
-    	    if((o[base+"status"] != "0") && (o[base+"status"] != "1") && (o[base+"status"] != "7")) {
-    	        var d = new Date();
-    	        currState.lastChangeTick = d/1000 + TIMEOUT_SECONDS;
-    	        currState.lastStatus = o[base+"status"];
-    	        currState.installing = true;
-    	        //currState.name = o[base+"module"];
-    	        showInstallStatus(true);
-    	    }
-    	}
+        var o = db_softcenter_;
+        var base = "softcenter_installing_";
+        if(o[base+"status"]) {
+            //状态不是0/1/7,则当前正处于安装状态,实时更新安装信息
+            if((o[base+"status"] != "0") && (o[base+"status"] != "1") && (o[base+"status"] != "7")) {
+                var d = new Date();
+                currState.lastChangeTick = d/1000 + TIMEOUT_SECONDS;
+                currState.lastStatus = o[base+"status"];
+                currState.installing = true;
+                //currState.name = o[base+"module"];
+                showInstallStatus(true);
+            }
+        }
     }
-	
+    
     function showInstallStatus(isInit) {
         $.ajax({
-		type: "GET",
-	    url: "/_api/softcenter_installing_",
-		dataType: "json",
-		async:false,
+        type: "GET",
+        url: "/_api/softcenter_installing_",
+        dataType: "json",
+        async:false,
         success: function(resp) {
             var o = resp.result[0];
             var base = "softcenter_installing_";
@@ -351,7 +353,7 @@ function appPostScript(moduleInfo, script) {
             var d = new Date();
             var curr = d.getTime()/1000;
             curr_module = checkField(o, "softcenter_installing_module", "");
-	            
+            if(o[base+"status"] != currState.lastStatus) {
             currState.lastStatus = o[base+"status"];
             showInstallInfo(curr_module, currState.lastStatus);
 
@@ -362,6 +364,7 @@ function appPostScript(moduleInfo, script) {
                 return;
             } else if(currState.lastStatus == "0") {
                 currState.installing = false;
+                }
             }
             
             if(currState.lastChangeTick > curr) {
@@ -476,24 +479,24 @@ function appPostScript(moduleInfo, script) {
             timeout: 1 * 1000
         });
     }
-	
-	function softceterInitData(data) {
-	    var remoteData = data;
-	    $("#spnOnlineVersion").html(remoteData.version);
-	    if(remoteData.version != db_softcenter_["softcenter_version"]) {
-	     $("#updateBtn").show();
-	     $("#updateBtn").click(function () {
-	          var moduleInfo = {
-	        "name":"softcenter",
-	        "md5": remoteData.md5,
-	        "tar_url": remoteData.tar_url,
-	        "version": remoteData.version
-	        };
-	          appPostScript(moduleInfo, "ks_app_install.sh");
-	     });
-	    }
-	}
-	
+
+function softceterInitData(data) {
+    var remoteData = data;
+    $("#spnOnlineVersion").html(remoteData.version);
+    if(remoteData.version != db_softcenter_["softcenter_version"]) {
+     $("#updateBtn").show();
+     $("#updateBtn").click(function () {
+          var moduleInfo = {
+        "name":"softcenter",
+        "md5": remoteData.md5,
+        "tar_url": remoteData.tar_url,
+        "version": remoteData.version
+        };
+          appPostScript(moduleInfo, "ks_app_install.sh");
+     });
+    }
+}
+
     function init(cb) {
         //设置默认值
         function _setDefault(source, defaults) {
@@ -543,44 +546,44 @@ function appPostScript(moduleInfo, script) {
              //shadowsocks 将默认安装在软件中心
              //刚刷机完成时，软件中心初始化情况下ss需要手动安装，默认安装2.9.1版本ss
              //安装完毕后，ss显示在已安装面板，并且不能卸载，同时兼容了老的固件和新的固件
-			if(result["shadowsocks"].install == "0"){
-    			$.ajax({
-    			    url: 'https://rogsoft.ngrok.wang/shadowsocks/config.json.js',
-    			    type: 'GET',
-    			    dataType: 'jsonp',
-                	    error: function() {
-            			result["shadowsocks"] = {};
-            			result["shadowsocks"].name = "shadowsocks";
-            			result["shadowsocks"].title = "shadowsocks";
-	        			result["shadowsocks"].install = "0";
-	        			result["shadowsocks"].md5 = "8cc2a6f7243a8ecdbef6a6eb91b462cf";
-            			result["shadowsocks"].home_url = "Main_Ss_Content.asp";
-            			result["shadowsocks"].tar_url = "shadowsocks/history/shadowsocks.tar.gz";
-            			result["shadowsocks"].description = "科学上网";
-            			result["shadowsocks"].version = "2.8.9";
-                	    },
-    			   		success: function(res) {
-            			result["shadowsocks"] = {};
-            			result["shadowsocks"].name = "shadowsocks";
-            			result["shadowsocks"].title = "shadowsocks";
-	        			result["shadowsocks"].install = "0";
-	        			result["shadowsocks"].md5 = res.md5;
-            			result["shadowsocks"].home_url = "Main_Ss_Content.asp";
-            			result["shadowsocks"].tar_url = "shadowsocks/shadowsocks.tar.gz";
-            			result["shadowsocks"].description = "科学上网";
-            			result["shadowsocks"].version = res.version;
-    			     }
-    			});
-         	}else{
-	        	result["shadowsocks"] = {};
-            	result["shadowsocks"].name = "shadowsocks";
-            	result["shadowsocks"].title = "shadowsocks";
-	        result["shadowsocks"].install = "4";
-	        //result["shadowsocks"].md5 = "8cc2a6f7243a8ecdbef6a6eb91b462cf";
-            	result["shadowsocks"].home_url = "Main_Ss_Content.asp";
-            	result["shadowsocks"].description = "科学上网";
-            	//result["shadowsocks"].version = "2.9.9";
-         	}
+            if(result["shadowsocks"].install == "0"){
+                $.ajax({
+                    url: 'https://rogsoft.ngrok.wang/shadowsocks/config.json.js',
+                    type: 'GET',
+                    dataType: 'jsonp',
+                        error: function() {
+                        result["shadowsocks"] = {};
+                        result["shadowsocks"].name = "shadowsocks";
+                        result["shadowsocks"].title = "shadowsocks";
+                        result["shadowsocks"].install = "0";
+                        result["shadowsocks"].md5 = "8cc2a6f7243a8ecdbef6a6eb91b462cf";
+                        result["shadowsocks"].home_url = "Main_Ss_Content.asp";
+                        result["shadowsocks"].tar_url = "shadowsocks/history/shadowsocks.tar.gz";
+                        result["shadowsocks"].description = "科学上网";
+                        result["shadowsocks"].version = "2.8.9";
+                        },
+                        success: function(res) {
+                        result["shadowsocks"] = {};
+                        result["shadowsocks"].name = "shadowsocks";
+                        result["shadowsocks"].title = "shadowsocks";
+                        result["shadowsocks"].install = "0";
+                        result["shadowsocks"].md5 = res.md5;
+                        result["shadowsocks"].home_url = "Main_Ss_Content.asp";
+                        result["shadowsocks"].tar_url = "shadowsocks/shadowsocks.tar.gz";
+                        result["shadowsocks"].description = "科学上网";
+                        result["shadowsocks"].version = res.version;
+                     }
+                });
+            }else{
+                result["shadowsocks"] = {};
+                result["shadowsocks"].name = "shadowsocks";
+                result["shadowsocks"].title = "shadowsocks";
+            result["shadowsocks"].install = "4";
+            //result["shadowsocks"].md5 = "8cc2a6f7243a8ecdbef6a6eb91b462cf";
+                result["shadowsocks"].home_url = "Main_Ss_Content.asp";
+                result["shadowsocks"].description = "科学上网";
+                //result["shadowsocks"].version = "2.9.9";
+            }
 
             //设置默认值和设置icon的路径
             $.map(result, function (item, name) {
@@ -633,6 +636,9 @@ function appPostScript(moduleInfo, script) {
     show_menu();
 
 
+    if(!db_softcenter_["softcenter_version"]) {
+        db_softcenter_["softcenter_version"] = "0.0";
+    }
     $("#spnCurrVersion").html(db_softcenter_["softcenter_version"]);
 
         init(function () {
@@ -677,17 +683,17 @@ function notice_show(){
         type: 'GET',
         dataType: 'jsonp',
         success: function(res) {
-			$("#push_titile").html(res.title);
-			$("#push_content1").html(res.content1);
-			$("#push_content2").html(res.content2);
-			if(res.content3){
-				document.getElementById("push_content3_li").style.display = "";
-				$("#push_content3").html(res.content3);
-			}
-			if(res.content4){
-				document.getElementById("push_content4_li").style.display = "";
-				$("#push_content4").html(res.content4);
-			}
+            $("#push_titile").html(res.title);
+            $("#push_content1").html(res.content1);
+            $("#push_content2").html(res.content2);
+            if(res.content3){
+                document.getElementById("push_content3_li").style.display = "";
+                $("#push_content3").html(res.content3);
+            }
+            if(res.content4){
+                document.getElementById("push_content4_li").style.display = "";
+                $("#push_content4").html(res.content4);
+            }
         }
     });
 }
