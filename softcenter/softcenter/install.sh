@@ -3,47 +3,39 @@
 softcenter_install() {
 	if [ -d "/tmp/softcenter" ]; then
 		# coping files
-		mkdir -p /koolshare/bin/
-		mkdir -p /koolshare/init.d/
-		mkdir -p /koolshare/scripts/
-		mkdir -p /koolshare/configs/
-		mkdir -p /koolshare/webs/
-		mkdir -p /koolshare/res/
-
-		# dectect if menu mounted
-		mount=`mount | grep "menuTree"`
-		[ -n "$mount" ] && umount /www/require/modules/menuTree.js
-		sleep 1
-		mv -rf /tmp/softcenter/webs/menuTree.js /koolshare/webs/
-		mount --bind /jffs/koolshare/webs/menuTree.js /www/require/modules/menuTree.js
-
-		cp -rf /tmp/softcenter/webs/* /koolshare/webs/
-		cp -rf /tmp/softcenter/webs/menuTree.js /koolshare/webs/.menuTree.js
-		cp -rf /tmp/softcenter/res/* /koolshare/res/
-		cp -rf /tmp/softcenter/init.d/* /koolshare/init.d/
-		cp -rf /tmp/softcenter/bin/* /koolshare/bin/
-		cp -rf /tmp/softcenter/perp /koolshare/
-		cp -rf /tmp/softcenter/scripts /koolshare/
-		chmod 755 /koolshare/bin/*
-		chmod 755 /koolshare/init.d/*
-		chmod 755 /koolshare/perp/*
-		chmod 755 /koolshare/perp/.boot/*
-		chmod 755 /koolshare/perp/.control/*
-		chmod 755 /koolshare/perp/httpdb/*
-		chmod 755 /koolshare/perp/skipd/*
-		chmod 755 /koolshare/scripts/*
+		mkdir -p /jffs/koolshare/bin/
+		mkdir -p /jffs/koolshare/init.d/
+		mkdir -p /jffs/koolshare/scripts/
+		mkdir -p /jffs/koolshare/configs/
+		mkdir -p /jffs/koolshare/webs/
+		mkdir -p /jffs/koolshare/res/
+		cp -rf /tmp/softcenter/webs/* /jffs/koolshare/webs/
+		cp -rf /tmp/softcenter/webs/menuTree.js /jffs/koolshare/webs/.menuTree.js
+		cp -rf /tmp/softcenter/res/* /jffs/koolshare/res/
+		cp -rf /tmp/softcenter/init.d/* /jffs/koolshare/init.d/
+		cp -rf /tmp/softcenter/bin/* /jffs/koolshare/bin/
+		cp -rf /tmp/softcenter/perp /jffs/koolshare/
+		cp -rf /tmp/softcenter/scripts /jffs/koolshare/
+		chmod 755 /jffs/koolshare/bin/*
+		chmod 755 /jffs/koolshare/init.d/*
+		chmod 755 /jffs/koolshare/perp/*
+		chmod 755 /jffs/koolshare/perp/.boot/*
+		chmod 755 /jffs/koolshare/perp/.control/*
+		chmod 755 /jffs/koolshare/perp/httpdb/*
+		chmod 755 /jffs/koolshare/perp/skipd/*
+		chmod 755 /jffs/koolshare/scripts/*
 		
 		# dectect if menu mounted
 		mount=`mount | grep "menuTree"`
 		[ -n "$mount" ] && umount /www/require/modules/menuTree.js
-		cp -rf /tmp/softcenter/webs/menuTree.js /koolshare/webs/menuTree.js
+		cp -rf /tmp/softcenter/webs/menuTree.js /jffs/koolshare/webs/menuTree.js
 		mount --bind /jffs/koolshare/webs/menuTree.js /www/require/modules/menuTree.js
 
 		# remove something
 		rm -rf /tmp/softcenter
 
 		# make shadowsocks note upgrade
-		if [ -f "/koolshare/ss/ssconfig.sh" ]; then
+		if [ -f "/jffs/koolshare/ss/ssconfig.sh" ]; then
 			dbus set softcenter_module_shadowsocks_install=4
 		fi
 
@@ -70,8 +62,10 @@ softcenter_install() {
 			EOF
 			chmod +x /jffs/scripts/nat-start
 		fi
-		
 
+		# dectect if menu mounted
+		mount=`mount | grep "menuTree"`
+		[ -z "$mount" ] && mount --bind /jffs/jffs/koolshare/webs/menuTree.js /www/require/modules/menuTree.js
 
 		# others thing
 		mkdir -p /tmp/upload
