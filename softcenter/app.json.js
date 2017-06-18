@@ -11,16 +11,6 @@
             "version": "3.5.5"
         }, 
         {
-            "build_date": "2016-06-29_11:33:47", 
-            "description": "让局域网控制能简单", 
-            "home_url": "", 
-            "md5": "3631291ffa400f09c57b0b8a789e1161", 
-            "name": "phddns", 
-            "tar_url": "phddns/phddns.tar.gz", 
-            "title": "花生壳内网版", 
-            "version": "0.2"
-        }, 
-        {
             "build_date": "2017-06-18_23:55:25", 
             "description": "去广告，没烦恼", 
             "home_url": "Module_koolproxy.asp", 
@@ -29,6 +19,16 @@
             "tar_url": "koolproxy/koolproxy.tar.gz", 
             "title": "koolproxy", 
             "version": "1.0"
+        }, 
+        {
+            "build_date": "2017-06-19_01:03:50", 
+            "description": "中文SSID，装逼利器！", 
+            "home_url": "Module_ssid.asp", 
+            "md5": "fc052bb1ff42154d7d6488641ccb7ae3", 
+            "name": "ssid", 
+            "tar_url": "ssid/ssid.tar.gz", 
+            "title": "中文SSID", 
+            "version": "1.3"
         }
     ], 
     "home_url": "https://raw.githubusercontent.com/koolshare/koolshare.github.io/master", 
