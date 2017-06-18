@@ -101,10 +101,10 @@
             "version": "2.2.6"
         }, 
         {
-            "build_date": "2017-06-18_23:36:41", 
+            "build_date": "2017-06-18_23:55:25", 
             "description": "去广告，没烦恼", 
             "home_url": "Module_koolproxy.asp", 
-            "md5": "9aad4266c9175ac9fe5a0e5e4d65cf0c", 
+            "md5": "8c1b3ee29209a9fbb4eacf059232011c", 
             "name": "koolproxy", 
             "tar_url": "koolproxy/koolproxy.tar.gz", 
             "title": "koolproxy", 
