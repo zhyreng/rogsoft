@@ -8,20 +8,28 @@
 <link rel="shortcut icon" href="images/favicon.png">
 <link rel="icon" href="images/favicon.png">
 <title>Merlin software center</title>
-<link rel="stylesheet" type="text/css" href="index_style.css"/>
-<link rel="stylesheet" type="text/css" href="form_style.css"/>
-<link rel="stylesheet" type="text/css" href="/res/Softerware_center.css"/>
+<link rel="stylesheet" type="text/css" href="index_style.css">
+<link rel="stylesheet" type="text/css" href="form_style.css">
+<link rel="stylesheet" type="text/css" href="/res/Softerware_center.css">
+<script type="text/javascript" src="/js/jquery.js"></script>
+<script>
+	var db_softcenter_ = [];
+	$.getJSON("/_api/softcenter_", function(resp) {
+		db_softcenter_=resp.result[0];
+    	if(!db_softcenter_["softcenter_version"]) {
+    	    db_softcenter_["softcenter_version"] = "0.0";
+    	}
+	});
+</script>
 <script language="JavaScript" type="text/javascript" src="/state.js"></script>
 <script language="JavaScript" type="text/javascript" src="/help.js"></script>
 <script language="JavaScript" type="text/javascript" src="/general.js"></script>
 <script language="JavaScript" type="text/javascript" src="/popup.js"></script>
 <script language="JavaScript" type="text/javascript" src="/client_function.js"></script>
 <script language="JavaScript" type="text/javascript" src="/validator.js"></script>
-<script type="text/javascript" src="/js/jquery.js"></script>
 <script type="text/javascript" src="/general.js"></script>
 <script type="text/javascript" src="/switcherplugin/jquery.iphone-switch.js"></script>
 <script type="text/javascript" src="/form.js"></script>
-<script type="text/javascript" src="/dbconf?p=softcenter_&v=<% uptime(); %>"></script>
 <style>
 .cloud_main_radius_left{
     -webkit-border-radius: 10px 0 0 10px;
@@ -135,14 +143,15 @@
     }
     .show-install-btn,
     .show-uninstall-btn{
-        border: none;
-        background: #444;
+        border: 1px solid #91071f;
+        background: none;
         color: #fff;
         padding: 10px 20px;
         border-radius: 5px 5px 0px 0px;
     }
     .active{
-        background: #444f53;
+        background: #91071f;
+        border: 1px solid #91071f;
     }
     .install-status-1 .uninstall-btn{
         display: block;
@@ -218,6 +227,7 @@ String.prototype.format = String.prototype.f = function() {
     }
     return s;
 };
+
 function formatString(s, args) {
     i = args.length;
     while (i--) {
@@ -225,15 +235,19 @@ function formatString(s, args) {
     }
     return s;
 }
+
 String.prototype.endsWith = function (suffix) {
   return (this.substr(this.length - suffix.length) === suffix);
 }
+
 String.prototype.startsWith = function(prefix) {
   return (this.substr(0, prefix.length) === prefix);
 }
+
 String.prototype.capitalizeFirstLetter = function() {
     return this.charAt(0).toUpperCase() + this.slice(1);
 }
+
 function checkField(o, f, d) {
     if(typeof o[f] == "undefined") {
         o[f] = d;
@@ -241,19 +255,18 @@ function checkField(o, f, d) {
 
     return o[f];
 }
+
 function appPostScript(moduleInfo, script) {
     if(currState.installing) {
     console.log("current is in installing state");
     return;
     }
     //Current page must has prefix of "Module_"
-    var data = {"SystemCmd":script, "current_page":"Module_koolnet.asp", "action_mode":" Refresh ", "action_script":""};
-
-    var applyUrl = "applydb.cgi?p=softcenter_";
+    var data = {};
 
     //currState.name = moduleInfo.name;
     //TODO auto choose for home_url
-    data["softcenter_home_url"] = "https://koolshare.ngrok.wang";
+    data["softcenter_home_url"] = "https://rogsoft.ngrok.wang";
     data["softcenter_installing_todo"] = moduleInfo.name;
     if(script == "ks_app_install.sh") {
     data["softcenter_installing_tar_url"] = moduleInfo.tar_url;
@@ -262,41 +275,40 @@ function appPostScript(moduleInfo, script) {
 
     //Update title for this module
     data[moduleInfo.name + "_title"] = moduleInfo.title;
-        applyUrl = applyUrl + "," + moduleInfo.name;
     }
 
-        $.ajax({
-                type: "POST",
-                url: applyUrl,
-                dataType: "text",
-                data: data,
-                success: function() {
-                    var d = new Date();
-                    //持续更新
-                    currState.lastChangeTick = d/1000 + TIMEOUT_SECONDS;
-                    currState.installing = true;
-                    showInstallStatus(true);
-                },
-                error: function() {
-                    currState.installing = false;
-                    console.log("install error");
-                }
-        });
-}
-function appInstallModule(moduleInfo) {
-    appPostScript(moduleInfo, "ks_app_install.sh");
-}
-function appUninstallModule(moduleInfo) {
+	var id = parseInt(Math.random() * 100000000);
+	var postData = {"id": id, "method":script, "params":[], "fields": data};
+		$.ajax({
+		  type: "POST",
+		  url: "/_api/",
+		  data: JSON.stringify(postData),
+		  dataType: "json",
+    	  success: function(response) {
+    	      var d = new Date();
+    	      //持续更新
+    	      currState.lastChangeTick = d/1000 + TIMEOUT_SECONDS;
+    	      currState.installing = true;
+    	      showInstallStatus(true);
+    	  },
+    	  error: function() {
+    	      currState.installing = false;
+    	  }
+		});
 
-    if (!window.confirm('确定卸载吗')) {
-        return;
-    }
-    appPostScript(moduleInfo, "ks_app_remove.sh");
-}
-</script>
-<script>
+	}
+	function appInstallModule(moduleInfo) {
+	    appPostScript(moduleInfo, "ks_app_install.sh");
+	}
+	function appUninstallModule(moduleInfo) {
+	
+	    if (!window.confirm('确定卸载吗')) {
+	        return;
+	    }
+	    appPostScript(moduleInfo, "ks_app_remove.sh");
+	}
     //TODO auto detect home url
-    db_softcenter_["softcenter_home_url"] = "https://koolshare.ngrok.wang";
+    db_softcenter_["softcenter_home_url"] = "https://rogsoft.ngrok.wang";
     
     // 安装信息更新策略:
     // 当软件安装的时候,安装进程内部会有超时时间. 超过超时时间 没安装成功,则认为失败.
@@ -306,28 +318,31 @@ function appUninstallModule(moduleInfo) {
     var TIMEOUT_SECONDS = 18;
     // TODO 如何避免实用全局变量?
     var softInfo = null;
+    
     function initInstallStatus() {
-    var o = db_softcenter_;
-    var base = "softcenter_installing_";
-    if(o[base+"status"]) {
-        //状态不是0/1/7,则当前正处于安装状态,实时更新安装信息
-        if((o[base+"status"] != "0") && (o[base+"status"] != "1") && (o[base+"status"] != "7")) {
-            var d = new Date();
-            currState.lastChangeTick = d/1000 + TIMEOUT_SECONDS;
-            currState.lastStatus = o[base+"status"];
-            currState.installing = true;
-            //currState.name = o[base+"module"];
-            showInstallStatus(true);
-        }
+    	var o = db_softcenter_;
+    	var base = "softcenter_installing_";
+    	if(o[base+"status"]) {
+    	    //状态不是0/1/7,则当前正处于安装状态,实时更新安装信息
+    	    if((o[base+"status"] != "0") && (o[base+"status"] != "1") && (o[base+"status"] != "7")) {
+    	        var d = new Date();
+    	        currState.lastChangeTick = d/1000 + TIMEOUT_SECONDS;
+    	        currState.lastStatus = o[base+"status"];
+    	        currState.installing = true;
+    	        //currState.name = o[base+"module"];
+    	        showInstallStatus(true);
+    	    }
+    	}
     }
-    }
+	
     function showInstallStatus(isInit) {
         $.ajax({
-        type: "get",
-        url: "dbconf?p=softcenter_installing_",
-        dataType: "script",
-        success: function(xhr) {
-            var o = db_softcenter_installing_;
+		type: "GET",
+	    url: "/_api/softcenter_installing_",
+		dataType: "json",
+		async:false,
+        success: function(resp) {
+            var o = resp.result[0];
             var base = "softcenter_installing_";
             console.log("status: " + o[base+"status"]);
             if(isInit) {
@@ -336,21 +351,21 @@ function appUninstallModule(moduleInfo) {
             var d = new Date();
             var curr = d.getTime()/1000;
             curr_module = checkField(o, "softcenter_installing_module", "");
-            if(o[base+"status"] != currState.lastStatus) {
-                currState.lastStatus = o[base+"status"];
-                showInstallInfo(curr_module, currState.lastStatus);
+	            
+            currState.lastStatus = o[base+"status"];
+            showInstallInfo(curr_module, currState.lastStatus);
 
-                // Install ok now
-                if(currState.lastStatus == "1" || currState.lastStatus == "7") {
-                    currState.installing = false;
-                    setTimeout("window.location.reload()", 1000);
-                    return;
-                } else if(currState.lastStatus == "0") {
-                    currState.installing = false;
-                }
+            // Install ok now
+            if(currState.lastStatus == "1" || currState.lastStatus == "7" || currState.lastStatus == "13") {
+                currState.installing = false;
+                setTimeout("window.location.reload()", 1000);
+                return;
+            } else if(currState.lastStatus == "0") {
+                currState.installing = false;
             }
+            
             if(currState.lastChangeTick > curr) {
-                    setTimeout("showInstallStatus()", 1500);
+                    setTimeout("showInstallStatus()", 200);
             } else {
                     currState.installing = false;
                     $("#appInstallInfo").html("等待超时,可尝试手动刷新");
@@ -461,24 +476,24 @@ function appUninstallModule(moduleInfo) {
             timeout: 1 * 1000
         });
     }
-
-function softceterInitData(data) {
-    var remoteData = data;
-    $("#spnOnlineVersion").html(remoteData.version);
-    if(remoteData.version != db_softcenter_["softcenter_version"]) {
-     $("#updateBtn").show();
-     $("#updateBtn").click(function () {
-          var moduleInfo = {
-        "name":"softcenter",
-        "md5": remoteData.md5,
-        "tar_url": remoteData.tar_url,
-        "version": remoteData.version
-        };
-          appPostScript(moduleInfo, "ks_app_install.sh");
-     });
-    }
-}
-
+	
+	function softceterInitData(data) {
+	    var remoteData = data;
+	    $("#spnOnlineVersion").html(remoteData.version);
+	    if(remoteData.version != db_softcenter_["softcenter_version"]) {
+	     $("#updateBtn").show();
+	     $("#updateBtn").click(function () {
+	          var moduleInfo = {
+	        "name":"softcenter",
+	        "md5": remoteData.md5,
+	        "tar_url": remoteData.tar_url,
+	        "version": remoteData.version
+	        };
+	          appPostScript(moduleInfo, "ks_app_install.sh");
+	     });
+	    }
+	}
+	
     function init(cb) {
         //设置默认值
         function _setDefault(source, defaults) {
@@ -530,26 +545,26 @@ function softceterInitData(data) {
              //安装完毕后，ss显示在已安装面板，并且不能卸载，同时兼容了老的固件和新的固件
 			if(result["shadowsocks"].install == "0"){
     			$.ajax({
-    			    url: 'https://koolshare.ngrok.wang/shadowsocks/config.json.js',
+    			    url: 'https://rogsoft.ngrok.wang/shadowsocks/config.json.js',
     			    type: 'GET',
     			    dataType: 'jsonp',
                 	    error: function() {
             			result["shadowsocks"] = {};
             			result["shadowsocks"].name = "shadowsocks";
             			result["shadowsocks"].title = "shadowsocks";
-	        		result["shadowsocks"].install = "0";
-	        		result["shadowsocks"].md5 = "8cc2a6f7243a8ecdbef6a6eb91b462cf";
+	        			result["shadowsocks"].install = "0";
+	        			result["shadowsocks"].md5 = "8cc2a6f7243a8ecdbef6a6eb91b462cf";
             			result["shadowsocks"].home_url = "Main_Ss_Content.asp";
             			result["shadowsocks"].tar_url = "shadowsocks/history/shadowsocks.tar.gz";
             			result["shadowsocks"].description = "科学上网";
             			result["shadowsocks"].version = "2.8.9";
                 	    },
-    			    success: function(res) {
+    			   		success: function(res) {
             			result["shadowsocks"] = {};
             			result["shadowsocks"].name = "shadowsocks";
             			result["shadowsocks"].title = "shadowsocks";
-	        		result["shadowsocks"].install = "0";
-	        		result["shadowsocks"].md5 = res.md5;
+	        			result["shadowsocks"].install = "0";
+	        			result["shadowsocks"].md5 = res.md5;
             			result["shadowsocks"].home_url = "Main_Ss_Content.asp";
             			result["shadowsocks"].tar_url = "shadowsocks/shadowsocks.tar.gz";
             			result["shadowsocks"].description = "科学上网";
@@ -580,11 +595,11 @@ function softceterInitData(data) {
 
                 // icon 规则:
                 // 如果已安装的插件,那图标必定在 /koolshare/res 目录, 通过 /res/icon-{name}.png 请求路径得到图标
-                // 如果是未安装的插件,则必定在 https://koolshare.ngrok.wang/{name}/{name}/icon-{name}.png
+                // 如果是未安装的插件,则必定在 https://rogsoft.ngrok.wang/{name}/{name}/icon-{name}.png
                 // TODO 如果因为一些错误导致没有图标, 有可能显示一张默认图标吗?
                 item.icon = parseInt(item.install, 10) !== 0
                     ? ('/res/icon-' + item.name + '.png')
-                    : ('https://koolshare.ngrok.wang' + new Array(3).join('/softcenter') + '/res/icon-' + item.name + '.png');
+                    : ('https://rogsoft.ngrok.wang' + new Array(3).join('/softcenter') + '/res/icon-' + item.name + '.png');
             });
             return result;
         };
@@ -615,11 +630,9 @@ function softceterInitData(data) {
     //只要一次获取成功，以后不在重新获取，知道页面刷新重入
     $(function () {
     //梅林要求用这个函数来显示左测菜单
-    show_menu(menu_hook);
+    show_menu();
 
-    if(!db_softcenter_["softcenter_version"]) {
-        db_softcenter_["softcenter_version"] = "0.0";
-    }
+
     $("#spnCurrVersion").html(db_softcenter_["softcenter_version"]);
 
         init(function () {
@@ -657,15 +670,10 @@ function softceterInitData(data) {
         });
 
     });
-var enable_ss = "<% nvram_get("enable_ss"); %>";
-var enable_soft = "<% nvram_get("enable_soft"); %>";
-function menu_hook(title, tab) {
-	tabtitle[tabtitle.length -1] = new Array("", "软件中心", "离线安装");
-	tablink[tablink.length -1] = new Array("", "Main_Soft_center.asp", "Main_Soft_setting.asp");
-}
+
 function notice_show(){
     $.ajax({
-        url: 'https://koolshare.ngrok.wang/softcenter/push_message.json.js',
+        url: 'https://rogsoft.ngrok.wang/softcenter/push_message.json.js',
         type: 'GET',
         dataType: 'jsonp',
         success: function(res) {
@@ -689,7 +697,6 @@ function notice_show(){
 <body>
     <div id="TopBanner"></div>
     <div id="Loading" class="popup_bg"></div>
-    <input type="hidden" name="preferred_lang" id="preferred_lang" value="<% nvram_get("preferred_lang"); %>"/>
     <input type="hidden" name="current_page" value="Main_Soft_center.asp">
     <input type="hidden" name="next_page" value="Main_Soft_center.asp">
     <input type="hidden" name="group_id" value="">
@@ -698,8 +705,6 @@ function notice_show(){
     <input type="hidden" name="action_script" value="">
     <input type="hidden" name="action_wait" value="8">
     <input type="hidden" name="first_time" value="">
-    <input type="hidden" name="preferred_lang" id="preferred_lang" value="<% nvram_get("preferred_lang"); %>">
-    <input type="hidden" name="firmver" value="<% nvram_get("firmver"); %>">
 <table class="content" align="center" cellpadding="0" cellspacing="0">
     <tr>
         <td width="17">&nbsp;</td>
@@ -715,15 +720,15 @@ function notice_show(){
                             <div>
                                 <table width="760px" border="0" cellpadding="5" cellspacing="0" bordercolor="#6b8fa3" class="FormTitle" id="FormTitle">
                                     <tr>
-                                        <td bgcolor="#4D595D" colspan="3" valign="top">
+                                        <td style="background:transparent" bgcolor="#4D595D" colspan="3" valign="top">
                                             <div>&nbsp;</div>
                                             <div class="formfonttitle">Software Center</div>
                                             <div style="margin-left:5px;margin-top:5px;margin-bottom:5px"><img src="/images/New_ui/export/line_export.png"></div>
                                                 <table width="100%" border="1" align="center" cellpadding="4" cellspacing="0" bordercolor="#6b8fa3" class="FormTable" >
                                                 </table>
                                                 <table width="100%" height="150px" style="border-collapse:collapse;">
-                                                    <tr bgcolor="#444f53">
-                                                        <td colspan="5" bgcolor="#444f53" class="cloud_main_radius">
+                                                    <tr>
+                                                        <td colspan="5" style="background:transparent" bgcolor="#444f53" class="cloud_main_radius">
                                                             <div style="padding:10px;width:95%;font-style:italic;font-size:14px;">
                                                                 <br/><br/>
                                                                 <table width="100%" >
@@ -760,7 +765,7 @@ function notice_show(){
                                                         <td colspan="3"></td>
                                                     </tr>
 
-                                                    <tr bgcolor="#444f53" id="install_status" style="display: none;" width="235px">
+                                                    <tr style="background:transparent;" bgcolor="#444f53" id="install_status" style="display: none;" width="235px">
                                                         <td>
                                                             <div style="padding:10px;width:95%;font-size:14px;" id="appInstallInfo">
                                                             </div>
@@ -777,9 +782,8 @@ function notice_show(){
                                                             <input class="show-uninstall-btn" type="button" value="未安装"/>
                                                         </td>
                                                     </tr>
-
-                                                    <tr bgcolor="#444f53" width="235px">
-                                                        <td colspan="4" id="IconContainer">
+                                                    <tr style="background:transparent;" bgcolor="#444f53" width="235px">
+                                                        <td colspan="4" id="IconContainer" style="border: 1px solid #91071f;">
                                                             <div style="text-align:center; line-height: 4em;">更新中...</div>
                                                         </td>
                                                     </tr>
