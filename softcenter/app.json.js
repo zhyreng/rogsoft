@@ -101,6 +101,16 @@
             "version": "2.2.6"
         }, 
         {
+            "build_date": "2017-06-18_23:36:41", 
+            "description": "去广告，没烦恼", 
+            "home_url": "Module_koolproxy.asp", 
+            "md5": "9aad4266c9175ac9fe5a0e5e4d65cf0c", 
+            "name": "koolproxy", 
+            "tar_url": "koolproxy/koolproxy.tar.gz", 
+            "title": "koolproxy", 
+            "version": "1.0"
+        }, 
+        {
             "build_date": "2016-05-19_22:37:04", 
             "description": "中文SSID，装逼利器！", 
             "home_url": "Module_ssid.asp", 
