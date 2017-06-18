@@ -289,14 +289,6 @@ tab: [
 {url: "Main_SsLocal_Content.asp", tabName: "__INHERIT__"},
 {url: "NULL", tabName: "__INHERIT__"}
 ]
-},
-{
-menuName: "shadowsocks",
-index: "menu_Shadowsocks",
-tab: [
-{url: "Module_koolproxy.asp", tabName: "koolproxy"},
-{url: "NULL", tabName: "__INHERIT__"}
-]
 }
 //========================================
 ],

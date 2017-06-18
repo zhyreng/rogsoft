@@ -368,7 +368,7 @@ function appPostScript(moduleInfo, script) {
             }
             
             if(currState.lastChangeTick > curr) {
-                    setTimeout("showInstallStatus()", 200);
+                    setTimeout("showInstallStatus()", 400);
             } else {
                     currState.installing = false;
                     $("#appInstallInfo").html("等待超时,可尝试手动刷新");
