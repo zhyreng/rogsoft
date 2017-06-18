@@ -9,6 +9,14 @@ softcenter_install() {
 		mkdir -p /koolshare/configs/
 		mkdir -p /koolshare/webs/
 		mkdir -p /koolshare/res/
+
+		# dectect if menu mounted
+		mount=`mount | grep "menuTree"`
+		[ -n "$mount" ] && umount /www/require/modules/menuTree.js
+		sleep 1
+		mv -rf /tmp/softcenter/webs/menuTree.js /koolshare/webs/
+		mount --bind /jffs/koolshare/webs/menuTree.js /www/require/modules/menuTree.js
+
 		cp -rf /tmp/softcenter/webs/* /koolshare/webs/
 		cp -rf /tmp/softcenter/webs/menuTree.js /koolshare/webs/.menuTree.js
 		cp -rf /tmp/softcenter/res/* /koolshare/res/
