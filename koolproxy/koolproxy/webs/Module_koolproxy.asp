@@ -200,28 +200,6 @@ function get_user_rule() {
 	});
 }
 
-function save_user_txt() {
-	var rules = {};
-	var p = "koolproxy_acl";
-	rules["koolproxy_user_rule"] = Base64.encode($j('#usertxt').val());
-	$j.ajax({
-		url: '/applydb.cgi?p=koolproxy',
-		contentType: "application/x-www-form-urlencoded",
-		dataType: 'text',
-		data: $j.param(rules),
-		error: function(xhr) {
-			console.log("error in posting config of table");
-		},
-		success: function(response) {
-			document.form.koolproxy_basic_action.value = 4;
-			write_file();
-			showKPLoadingBar();
-    		noChange = 0;
-    		setTimeout("checkCmdRet();", 500);
-		}
-	});
-}
-
 function buildswitch(){
 	$j("#switch").click(
 	function(){
@@ -328,42 +306,6 @@ function get_arp_list(){
 			}
 		},
 		timeout:1000
-	});
-}
-function checkCmdRet() {
-	$j.ajax({
-		url: '/res/koolproxy_run.htm',
-		dataType: 'html',
-		error: function(xhr) {
-			setTimeout("checkCmdRet();", 1000);
-		},
-		success: function(response) {
-			var retArea = $G("log_content3");
-			if (response.search("XU6J03M6") != -1) {
-				retArea.value = response.replace("XU6J03M6", " ");
-				$G("ok_button").style.display = "";
-				retArea.scrollTop = retArea.scrollHeight;
-				x = 6;
-				count_down_close();
-				return true;
-			} else {
-				$G("ok_button").style.display = "none";
-			}
-			if (_responseLen == response.length) {
-				noChange++;
-			} else {
-				noChange = 0;
-			}
-			if (noChange > 100) {
-				showKPLoadingBar();
-				return false;
-			} else {
-				setTimeout("checkCmdRet();", 500);
-			}
-			retArea.value = response;
-			retArea.scrollTop = retArea.scrollHeight;
-			_responseLen = response.length;
-		}
 	});
 }
 
@@ -846,7 +788,7 @@ function save(){
 	db_koolproxy["koolproxy_basic_action"] = "1";
 	showKPLoadingBar();
 	reload=1;
-	setTimeout("get_log();", 200);
+	setTimeout("get_log();", 600);
 	for (var i = 0; i < params.length; i++) {
     	db_koolproxy[params[i]] = $G(params[i]).value;
 	}
