@@ -64,8 +64,13 @@ softcenter_install() {
 		mkdir -p /jffs/configs/dnsmasq.d
 
 		# now try to reboot software center
-		PERP=`perpls | grep -E "httpdb|skipd|\+\+" | wc -l`
-		[ "$PERP" -ne "2" ] && sh /jffs/koolshare/bin/kscore.sh || echo software center runing normally!
+		PERP_PROCESS=`pidof perp`
+		if [ -z "$PERP_PROCESS" ];then
+			sh /jffs/koolshare/bin/kscore.sh
+		else
+			PERP=`perpls | grep -E "httpdb|skipd|\+\+" | wc -l`
+			[ "$PERP" -ne "2" ] && sh /jffs/koolshare/bin/kscore.sh || echo software center runing normally!
+		fi
 		
 	fi
 }
