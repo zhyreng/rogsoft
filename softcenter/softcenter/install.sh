@@ -10,7 +10,6 @@ softcenter_install() {
 		mkdir -p /jffs/koolshare/webs/
 		mkdir -p /jffs/koolshare/res/
 		cp -rf /tmp/softcenter/webs/* /jffs/koolshare/webs/
-		cp -rf /tmp/softcenter/webs/menuTree.js /jffs/koolshare/webs/.menuTree.js
 		cp -rf /tmp/softcenter/res/* /jffs/koolshare/res/
 		cp -rf /tmp/softcenter/init.d/* /jffs/koolshare/init.d/
 		cp -rf /tmp/softcenter/bin/* /jffs/koolshare/bin/
@@ -59,10 +58,6 @@ softcenter_install() {
 			EOF
 			chmod +x /jffs/scripts/nat-start
 		fi
-
-		# dectect if menu mounted
-		# mount=`mount | grep "menuTree"`
-		# [ -z "$mount" ] && mount --bind /jffs/jffs/koolshare/webs/menuTree.js /www/require/modules/menuTree.js
 
 		# others thing
 		mkdir -p /tmp/upload
