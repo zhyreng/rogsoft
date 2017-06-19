@@ -35,7 +35,8 @@ else
 fi
 
 cp -f /tmp/koolproxy/uninstall.sh /jffs/koolshare/scripts/uninstall_koolproxy.sh
-
+mkdir -p /tmp/upload
+touch /tmp/upload/kp_log.txt
 
 cd /
 
