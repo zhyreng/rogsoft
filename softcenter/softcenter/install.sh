@@ -33,11 +33,11 @@ softcenter_install() {
 		fi
 
 		# make softcenter auto start when mounting
-		[ ! -L "/jffs/.asusrouter" ] && ln -sf /jffs/.asusrouter /jffs/koolshare/bin/kscore.sh
+		[ ! -L "/jffs/.asusrouter" ] && ln -sf /jffs/koolshare/bin/kscore.sh /jffs/.asusrouter
 
 		# PATH environment of softcenter for ssh users
 		mkdir -p /jffs/etc
-		[ ! -L "/jffs/etc/profile" ] && ln -sf /jffs/etc/profile /jffs/koolshare/scripts/base.sh
+		[ ! -L "/jffs/etc/profile" ] && ln -sf /jffs/koolshare/scripts/base.sh /jffs/etc/profile
 
 		# some soft link
 		[ ! -L "/jffs/koolshare/scripts/ks_app_remove.sh" ] && ln -sf /jffs/koolshare/scripts/ks_app_install.sh /jffs/koolshare/scripts/ks_app_remove.sh
@@ -64,7 +64,7 @@ softcenter_install() {
 		mkdir -p /jffs/configs/dnsmasq.d
 
 		# now try to reboot software center
-		PERP_PROCESS=`pidof perp`
+		PERP_PROCESS=`pidof perpboot`
 		if [ -z "$PERP_PROCESS" ];then
 			sh /jffs/koolshare/bin/kscore.sh
 		else
