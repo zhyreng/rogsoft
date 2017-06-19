@@ -46,6 +46,9 @@ softcenter_install() {
 		mkdir -p /jffs/etc
 		[ ! -L "/jffs/etc/profile" ] && ln -sf /jffs/etc/profile /jffs/koolshare/scripts/base.sh
 
+		# some soft link
+		[ ! -L "/jffs/koolshare/scripts/ks_app_remove.sh" ] && ln -sf /jffs/koolshare/scripts/ks_app_install.sh /jffs/koolshare/scripts/ks_app_remove.sh
+
 		# creat nat-start and nat-start when not exist
 		mkdir -p /jffs/scripts
 		if [ ! -f "/jffs/scripts/wan-start" ];then

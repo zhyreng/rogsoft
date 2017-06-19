@@ -1,1 +1,1 @@
-ks_app_remove.sh
+ks_app_install.sh
