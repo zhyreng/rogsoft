@@ -11,23 +11,13 @@
             "version": "3.5.5"
         }, 
         {
-            "build_date": "2017-06-19_23:12:21", 
+            "build_date": "2017-06-20_18:19:21", 
             "description": "去广告，没烦恼", 
             "home_url": "Module_koolproxy.asp", 
-            "md5": "cde15e635e849127897bc9eaa07c0fcf", 
+            "md5": "c962e565b6328ecc0cffbc191e745984", 
             "name": "koolproxy", 
             "tar_url": "koolproxy/koolproxy.tar.gz", 
             "title": "koolproxy", 
-            "version": "1.2"
-        }, 
-        {
-            "build_date": "2017-06-19_01:03:50", 
-            "description": "中文SSID，装逼利器！", 
-            "home_url": "Module_ssid.asp", 
-            "md5": "fc052bb1ff42154d7d6488641ccb7ae3", 
-            "name": "ssid", 
-            "tar_url": "ssid/ssid.tar.gz", 
-            "title": "中文SSID", 
             "version": "1.3"
         }
     ], 

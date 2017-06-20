@@ -1,6 +1,6 @@
 !x  -----------------------------------------------------------------------------------------------------------------
 !x  -----[KoolProxy Plus 3.5.11]
-!x  -----update[rules]: 2017-6-17 22:35
+!x  -----update[rules]: 2017-6-18 12:49
 !x  -----Thanks: From KP Rule Group -- <houzi-> <today2004> <a-len> <xiaoxia> <leo> <Carseason>
 !x  -----Thanks for help: <CJX> <yiclear> <xwhyz> 
 !x  -----Tip: Welcome to rule group,Please Send mail to <wojiaolinmu008@gmail.com>
@@ -32,6 +32,9 @@
 ||ssl-youtube.2cnt.net
 ||youtube.112.2o7.net
 ||youtube.2cnt.net
+/adimg/*
+||s.360.cn^
+||xiaodao.la/upload/1/146486/images/20170324/20170324162395249524.gif
 !x  -----------------------------------------------------------------------------------------------------------------
 
 !x  -----------------------------------------------------------------------------------------------------------------
